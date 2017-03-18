@@ -3,14 +3,28 @@ from bs4 import BeautifulSoup
 import time
 import smtplib
 
+url = "http://reddit.com/"
+headers = {'User-Agent': 'Chrome/56.0.2924.87'}
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.text, "lxml")
+
 while True:
-	url = "http://reddit.com/"
-	headers = {'User-Agent': 'Chrome/56.0.2924.87'}
+	#store the last retrieved soup for comparison
+	oldSoup = soup
+	#get the webpage again
 	response = requests.get(url, headers=headers)
 	soup = BeautifulSoup(response.text, "lxml")
-
-	if str(soup).find("Reddit") == -1:
-		time.sleep(60)
+	
+	#create strings from the old & new soups to compare
+	str1 = str(soup)
+	str2 = str(oldSoup)
+	
+	#the old "check for changes" code
+	#if str(soup).find("Reddit") == -1:
+	#	time.sleep(60)
+	#	continue
+	#compare the two strings
+	if str1 == str2:
 		continue
 	else:
 		msg = 'REDDIT UPDATED!'
@@ -29,3 +43,5 @@ while True:
 		server.quit()
 
 		break
+		
+	time.sleep(60)
